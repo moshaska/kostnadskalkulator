@@ -93,10 +93,24 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
     </div>
     <div class="field">
       <label>Betalingsløsning</label>
-      <div class="sub">Shopify tar ekstragebyr ved ekstern løsning – kommer i tillegg til hva Klarna/Nets/Dintero tar</div>
-      <div class="options" id="payment">
-        <div class="opt sel" data-val="native">Shopify Payments (ingen ekstragebyr)</div>
-        <div class="opt" data-val="external">Ekstern (Klarna, Nets, Dintero)</div>
+      <div class="sub">Sett andelen av omsetning som går via ekstern løsning (f.eks. Vipps). Shopify tar ekstragebyr på den andelen.</div>
+      <div style="margin-top:.5rem">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#5f5e5a;margin-bottom:6px">
+          <span>Shopify Payments</span>
+          <span>Ekstern (Vipps / Klarna / Nets)</span>
+        </div>
+        <div style="position:relative;height:36px;display:flex;align-items:center">
+          <div id="split-track" style="position:relative;width:100%;height:8px;border-radius:4px;overflow:hidden;cursor:pointer">
+            <div id="split-native" style="position:absolute;left:0;top:0;height:100%;background:#185fa5;transition:width .05s"></div>
+            <div id="split-ext" style="position:absolute;right:0;top:0;height:100%;background:#d3d1c7"></div>
+          </div>
+          <input type="range" id="ext-pct" min="0" max="100" step="1" value="0"
+            style="position:absolute;width:100%;opacity:0;cursor:pointer;height:36px;margin:0">
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <span style="font-size:13px;font-weight:500;color:#185fa5" id="native-pct-label">100% Shopify Payments</span>
+          <span style="font-size:13px;font-weight:500;color:#888780" id="ext-pct-label">0% ekstern</span>
+        </div>
       </div>
     </div>
   </div>
@@ -156,33 +170,46 @@ const litiumPlans = [
   { plan:'Enterprise', lisens:30000, revMin:4000000,  revMax:999999999 },
 ];
 
-['billing','payment'].forEach(id => {
-  document.getElementById(id).addEventListener('click', function(e) {
-    const t = e.target.closest('.opt');
-    if (!t) return;
-    this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
-    t.classList.add('sel');
-  });
+document.getElementById('billing').addEventListener('click', function(e) {
+  const t = e.target.closest('.opt');
+  if (!t) return;
+  this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  t.classList.add('sel');
 });
 document.getElementById('rev').addEventListener('input', function() {
   document.getElementById('rev-out').textContent = Number(this.value).toLocaleString('nb-NO') + ' kr';
 });
+
+const extSlider = document.getElementById('ext-pct');
+function updateSplitUI() {
+  const v = parseInt(extSlider.value);
+  document.getElementById('split-native').style.width = (100-v) + '%';
+  document.getElementById('split-ext').style.width = v + '%';
+  document.getElementById('native-pct-label').textContent = (100-v) + '% Shopify Payments';
+  document.getElementById('ext-pct-label').textContent = v + '% ekstern';
+  document.getElementById('ext-pct-label').style.color = v > 0 ? '#a32d2d' : '#888780';
+}
+extSlider.addEventListener('input', updateSplitUI);
+updateSplitUI();
 
 function getVal(id) { return document.getElementById(id).querySelector('.sel')?.dataset.val; }
 function fmt(n, zero) { return (n === 0 && zero) ? zero : Math.round(n).toLocaleString('nb-NO') + ' kr'; }
 function getPlan(plans, rev) {
   return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length-1];
 }
+function getExtPct() { return parseInt(document.getElementById('ext-pct').value) / 100; }
 
 // State for selected plans
 const selectedPlan = { shopify: null, woo: null, litium: null };
 
-function renderShopifyCard(rev, annual, useExt, activePlanIdx, recommendedIdx) {
+function renderShopifyCard(rev, annual, extPct, activePlanIdx, recommendedIdx) {
   const p = shopifyPlans[activePlanIdx];
   const lisens = Math.round((annual ? p.usdY : p.usdM) * NOK);
-  const tx = useExt ? Math.round(rev * p.txExt) : 0;
+  const extRev = Math.round(rev * extPct);
+  const tx = Math.round(extRev * p.txExt);
   const total = lisens + tx;
   const isPlus = p.plan === 'Plus';
+  const hasExt = extPct > 0;
 
   const switcher = shopifyPlans.map((pl, i) => {
     const isActive = i === activePlanIdx;
@@ -190,11 +217,10 @@ function renderShopifyCard(rev, annual, useExt, activePlanIdx, recommendedIdx) {
     return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('shopify',${i})">${pl.plan}</div>`;
   }).join('');
 
-  const txLabel = useExt ? `Tx-gebyr til Shopify (${(p.txExt*100).toFixed(1)}%)` : 'Tx-gebyr til Shopify';
-
   let extraBox = '';
-  if (useExt && tx > 0) {
-    extraBox = `<div class="warning-box">Shopify tar ${(p.txExt*100).toFixed(1)}% ekstra i tillegg til hva Klarna/Nets/Dintero tar. Det kan utgjøre store beløp.</div>`;
+  if (hasExt && tx > 0) {
+    const extPctDisplay = Math.round(extPct * 100);
+    extraBox = `<div class="warning-box">${extPctDisplay}% av omsetningen (${fmt(extRev)}) går via ekstern løsning. Shopify tar ${(p.txExt*100).toFixed(1)}% ekstra på dette – i tillegg til hva Vipps/Klarna/Nets tar.</div>`;
   }
   if (isPlus && p.plusReasons) {
     extraBox += `<div class="plus-box"><strong>Plus er mer enn omsetning.</strong> Vurder Plus når du trenger:<br>${p.plusReasons.map(r=>'· '+r).join('<br>')}</div>`;
@@ -209,7 +235,10 @@ function renderShopifyCard(rev, annual, useExt, activePlanIdx, recommendedIdx) {
       <div class="pname">Shopify</div>
       <div class="plan-switcher">${switcher}</div>
       <div class="cost-row"><span class="cost-label">Lisens</span><span class="cost-val">${fmt(lisens)}</span></div>
-      <div class="cost-row"><span class="cost-label">${txLabel}</span><span class="cost-val${useExt&&tx>0?' warn':''}">${fmt(tx, 'Ingen (Shopify Payments)')}</span></div>
+      <div class="cost-row">
+        <span class="cost-label">Tx-gebyr til Shopify (${(p.txExt*100).toFixed(1)}% av ${Math.round(extPct*100)}% eks.)</span>
+        <span class="cost-val${hasExt&&tx>0?' warn':''}">${fmt(tx, 'Ingen')}</span>
+      </div>
       <div class="total-row">
         <span class="total-label">Per måned</span>
         <div>
@@ -288,7 +317,7 @@ window.switchPlan = function(platform, idx) {
 function renderCards() {
   const grid = document.getElementById('platform-grid');
   grid.innerHTML =
-    renderShopifyCard(currentRev, currentAnnual, currentUseExt, selectedPlan.shopify, recShopify) +
+    renderShopifyCard(currentRev, currentAnnual, getExtPct(), selectedPlan.shopify, recShopify) +
     renderWooCard(currentRev, selectedPlan.woo, recWoo) +
     renderLitiumCard(currentRev, selectedPlan.litium, recLitium);
 }
@@ -296,7 +325,7 @@ function renderCards() {
 function calculate() {
   currentRev    = parseInt(document.getElementById('rev').value);
   currentAnnual = getVal('billing') === 'annual';
-  currentUseExt = getVal('payment') === 'external';
+  currentUseExt = getExtPct() > 0;
 
   recShopify = shopifyPlans.indexOf(getPlan(shopifyPlans, currentRev));
   recWoo     = wooPlans.indexOf(getPlan(wooPlans, currentRev));
