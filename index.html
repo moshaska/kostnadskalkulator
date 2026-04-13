@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;min-height:100vh;padding:2rem 1rem}
-.page{max-width:860px;margin:0 auto}
+.page{max-width:900px;margin:0 auto}
 h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .subtitle{font-size:14px;color:#5f5e5a;margin-bottom:2rem}
 .card{background:#fff;border-radius:12px;border:0.5px solid #d3d1c7;padding:1.5rem;margin-bottom:1.25rem}
@@ -15,6 +15,7 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .field{margin-bottom:1.25rem}
 .field:last-child{margin-bottom:0}
 .field label{display:block;font-size:14px;color:#1a1a18;margin-bottom:.4rem;font-weight:500}
+.field .sub{font-size:12px;color:#5f5e5a;margin-bottom:.5rem}
 .range-row{display:flex;align-items:center;gap:12px}
 .range-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:#d3d1c7;border-radius:2px;outline:none}
 .range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#185fa5;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #185fa5}
@@ -37,34 +38,36 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .badge.best{background:#e6f1fb;color:#0c447c}
 .badge.hidden{visibility:hidden;background:transparent}
 .pname{font-size:17px;font-weight:500;margin-bottom:.2rem}
-.plan-name{font-size:12px;color:#5f5e5a;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid #f1efe8}
-.plan-name strong{color:#1a1a18;font-weight:500}
+.plan-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;margin-bottom:.85rem;background:#f1efe8;color:#444441}
 .cost-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:0.5px solid #f1efe8;font-size:13px}
 .cost-row:last-of-type{border-bottom:none}
-.cost-label{color:#5f5e5a}
-.cost-val{font-weight:500;color:#1a1a18}
+.cost-label{color:#5f5e5a;flex:1}
+.cost-val{font-weight:500;color:#1a1a18;text-align:right}
+.cost-val.warn{color:#a32d2d}
 .total-row{display:flex;justify-content:space-between;align-items:center;margin-top:.85rem;padding-top:.85rem;border-top:1px solid #d3d1c7}
 .total-label{font-size:13px;font-weight:500}
 .total-val{font-size:22px;font-weight:500}
 .total-yr{font-size:11px;color:#888780;text-align:right;margin-top:1px}
-.upgrade-box{margin-top:.85rem;background:#f1efe8;border-radius:6px;padding:.6rem .75rem;font-size:11px;color:#444441;line-height:1.5}
+.upgrade-box{margin-top:.85rem;background:#f1efe8;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#444441;line-height:1.6}
 .upgrade-box strong{color:#1a1a18;font-weight:500}
+.warning-box{margin-top:.85rem;background:#fcebeb;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#791f1f;line-height:1.6}
+.warning-box strong{font-weight:500}
 .disclaimer{font-size:11px;color:#888780;line-height:1.6;padding:.85rem 1.25rem;border-top:0.5px solid #d3d1c7}
-
-.breakdown-wrap{padding:1rem 1.25rem}
-.tier-table{width:100%;border-collapse:collapse;font-size:12px}
-.tier-table th{text-align:left;color:#888780;font-weight:500;padding:4px 8px 8px;border-bottom:0.5px solid #d3d1c7}
-.tier-table th:not(:first-child){text-align:center}
-.tier-table td{padding:6px 8px;border-bottom:0.5px solid #f1efe8;color:#5f5e5a;vertical-align:middle}
-.tier-table td:not(:first-child){text-align:center}
+.tier-wrap{padding:1rem 1.25rem;overflow-x:auto}
+.tier-table{width:100%;border-collapse:collapse;font-size:12px;min-width:540px}
+.tier-table th{text-align:left;color:#888780;font-weight:500;padding:4px 10px 10px;border-bottom:0.5px solid #d3d1c7;white-space:nowrap}
+.tier-table th:not(:first-child){text-align:right}
+.tier-table td{padding:7px 10px;border-bottom:0.5px solid #f1efe8;color:#5f5e5a;vertical-align:middle}
+.tier-table td:not(:first-child){text-align:right}
 .tier-table tr.active-row td{color:#1a1a18;font-weight:500;background:#f5f9fe}
-.tier-table tr.active-row td:first-child{border-left:3px solid #185fa5;padding-left:5px}
+.tier-table tr.active-row td:first-child{border-left:3px solid #185fa5;padding-left:7px}
+.platform-sep td{background:#f1efe8;color:#888780;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:5px 10px}
 </style>
 </head>
 <body>
 <div class="page">
   <h1>Kostnadskalkulator</h1>
-  <p class="subtitle">Se anbefalt plan og estimerte kostnader per plattform basert på din omsetning</p>
+  <p class="subtitle">Anbefalt plan og estimerte plattformkostnader per måned – Shopify, WooCommerce og Litium</p>
 
   <div class="card">
     <div class="section-title">Din nettbutikk</div>
@@ -76,9 +79,18 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
       </div>
     </div>
     <div class="field">
+      <label>Faktureringsperiode Shopify</label>
+      <div class="sub">Årlig betaling gir 25% rabatt</div>
+      <div class="options" id="billing">
+        <div class="opt sel" data-val="monthly">Månedlig</div>
+        <div class="opt" data-val="annual">Årlig (–25%)</div>
+      </div>
+    </div>
+    <div class="field">
       <label>Betalingsløsning</label>
+      <div class="sub">Shopify tar ekstra gebyr ved ekstern løsning – i tillegg til hva Klarna/Nets/Dintero tar</div>
       <div class="options" id="payment">
-        <div class="opt sel" data-val="native">Plattformens egen løsning</div>
+        <div class="opt sel" data-val="native">Shopify Payments (ingen ekstragebyr)</div>
         <div class="opt" data-val="external">Ekstern (Klarna, Nets, Dintero)</div>
       </div>
     </div>
@@ -88,22 +100,23 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 
   <div class="result" id="result">
     <div class="result-card">
-      <div class="result-head" id="result-head">Anbefalt plan og estimert månedskostnad</div>
+      <div class="result-head">Anbefalt plan og estimert månedskostnad til plattform</div>
       <div class="platform-grid" id="platform-grid"></div>
-      <div class="disclaimer" id="disclaimer"></div>
+      <div class="disclaimer">
+        Shopify-priser i USD omregnet til NOK (kurs 10,80). Viser kun plattformkostnader – gebyrer fra Klarna, Nets, Dintero og kortselskaper kommer i tillegg for alle plattformer. WooCommerce-tall er estimert hosting og vedlikehold. Litium-lisens er indikativ og avtales med partner.
+      </div>
     </div>
 
     <div class="result-card">
-      <div class="result-head">Når bør du bytte plan? – alle terskler</div>
-      <div class="breakdown-wrap">
-        <table class="tier-table" id="tier-table">
+      <div class="result-head">Alle planterskler – når bør du bytte?</div>
+      <div class="tier-wrap">
+        <table class="tier-table">
           <thead>
             <tr>
-              <th>Plan</th>
-              <th>Plattform</th>
-              <th>Månedlig lisens</th>
-              <th>Tx-gebyr (ekstern)</th>
-              <th>Anbefalt omsetning</th>
+              <th>Plattform / Plan</th>
+              <th>Lisens/mnd</th>
+              <th>Tx-gebyr (ekstern betaling)</th>
+              <th>Anbefalt omsetning/mnd</th>
             </tr>
           </thead>
           <tbody id="tier-body"></tbody>
@@ -116,134 +129,207 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 <script>
 const NOK = 10.80;
 
-const allPlans = [
-  { platform:'Shopify', plan:'Basic',    lisensNOK: Math.round(29*NOK),   txExt:0.020, txNative:0,     revMin:0,         revMax:1500000,  hosting:0 },
-  { platform:'Shopify', plan:'Shopify',  lisensNOK: Math.round(79*NOK),   txExt:0.010, txNative:0,     revMin:1500000,   revMax:6000000,  hosting:0 },
-  { platform:'Shopify', plan:'Advanced', lisensNOK: Math.round(299*NOK),  txExt:0.005, txNative:0,     revMin:6000000,   revMax:25000000, hosting:0 },
-  { platform:'Shopify', plan:'Plus',     lisensNOK: Math.round(2300*NOK), txExt:0.002, txNative:0,     revMin:25000000,  revMax:999999999,hosting:0 },
-
-  { platform:'WooCommerce', plan:'Starter',    lisensNOK:0, txExt:0, txNative:0, revMin:0,        revMax:500000,   hosting:600  },
-  { platform:'WooCommerce', plan:'Business',   lisensNOK:0, txExt:0, txNative:0, revMin:500000,   revMax:3000000,  hosting:1400 },
-  { platform:'WooCommerce', plan:'Enterprise', lisensNOK:0, txExt:0, txNative:0, revMin:3000000,  revMax:999999999,hosting:3000 },
-
-  { platform:'Litium', plan:'Growth',     lisensNOK:8000,  txExt:0, txNative:0, revMin:0,        revMax:1000000,  hosting:0 },
-  { platform:'Litium', plan:'Business',   lisensNOK:15000, txExt:0, txNative:0, revMin:1000000,  revMax:4000000,  hosting:0 },
-  { platform:'Litium', plan:'Enterprise', lisensNOK:30000, txExt:0, txNative:0, revMin:4000000,  revMax:999999999,hosting:0 },
+// Shopify: månedlig / årlig lisens i USD, tx ved ekstern betaling
+const shopifyPlans = [
+  { plan:'Basic',    usdM:39,   usdY:29,   txExt:0.020, revMin:0,         revMax:1500000 },
+  { plan:'Grow',     usdM:105,  usdY:79,   txExt:0.010, revMin:1500000,   revMax:7000000 },
+  { plan:'Advanced', usdM:399,  usdY:299,  txExt:0.006, revMin:7000000,   revMax:25000000 },
+  { plan:'Plus',     usdM:2300, usdY:2300, txExt:0.002, revMin:25000000,  revMax:999999999 },
 ];
 
-const platformColors = { Shopify:'#185fa5', WooCommerce:'#3b6d11', Litium:'#7F77DD' };
+// WooCommerce: ingen lisens, estimert hosting+vedlikehold
+const wooPlans = [
+  { plan:'Liten butikk',  lisens:0, hosting:700,  revMin:0,        revMax:500000 },
+  { plan:'Voksende',      lisens:0, hosting:1500, revMin:500000,   revMax:3000000 },
+  { plan:'Enterprise',    lisens:0, hosting:3500, revMin:3000000,  revMax:999999999 },
+];
 
+// Litium: indikativ lisens
+const litiumPlans = [
+  { plan:'Growth',     lisens:8000,  revMin:0,        revMax:1000000 },
+  { plan:'Business',   lisens:15000, revMin:1000000,  revMax:4000000 },
+  { plan:'Enterprise', lisens:30000, revMin:4000000,  revMax:999999999 },
+];
+
+['billing','payment'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    const t = e.target.closest('.opt');
+    if (!t) return;
+    this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+    t.classList.add('sel');
+  });
+});
 document.getElementById('rev').addEventListener('input', function() {
   document.getElementById('rev-out').textContent = Number(this.value).toLocaleString('nb-NO') + ' kr';
 });
-document.getElementById('payment').addEventListener('click', function(e) {
-  const t = e.target.closest('.opt');
-  if (!t) return;
-  this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
-  t.classList.add('sel');
-});
 
 function getVal(id) { return document.getElementById(id).querySelector('.sel')?.dataset.val; }
-function fmt(n) { return Math.round(n).toLocaleString('nb-NO') + ' kr'; }
+function fmt(n, zero) { return n === 0 && zero ? zero : Math.round(n).toLocaleString('nb-NO') + ' kr'; }
 
-function getRecommendedPlan(platform, rev) {
-  const plans = allPlans.filter(p => p.platform === platform);
+function getPlan(plans, rev) {
   return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length-1];
 }
 
-function calcTotal(plan, rev, useExt) {
-  const tx = useExt ? plan.txExt * rev : 0;
-  return plan.lisensNOK + plan.hosting + tx;
-}
-
-function getUpgradeMsg(platform, rev, useExt) {
-  const plans = allPlans.filter(p => p.platform === platform);
-  const cur = plans.findIndex(p => rev >= p.revMin && rev < p.revMax);
-  if (cur === -1 || cur === plans.length - 1) return null;
-  const next = plans[cur + 1];
-  const curPlan = plans[cur];
-
-  if (platform === 'Shopify' && useExt) {
-    const curCost  = calcTotal(curPlan, next.revMin, true);
-    const nextCost = calcTotal(next, next.revMin, true);
-    if (nextCost < curCost) {
-      return `Oppgrader til <strong>${next.plan}</strong> når omsetning passerer ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd – lavere transaksjonsgebyr gjør det lønnsomt.`;
-    }
-    return `Neste plan: <strong>${next.plan}</strong> fra ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd.`;
-  }
-  return `Neste plan: <strong>${next.plan}</strong> anbefales fra ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd.`;
-}
-
 function calculate() {
-  const rev    = parseInt(document.getElementById('rev').value);
-  const useExt = getVal('payment') === 'external';
+  const rev     = parseInt(document.getElementById('rev').value);
+  const annual  = getVal('billing') === 'annual';
+  const useExt  = getVal('payment') === 'external';
 
-  const platforms = ['Shopify','WooCommerce','Litium'];
-  const results = platforms.map(pl => {
-    const plan  = getRecommendedPlan(pl, rev);
-    const tx    = useExt ? plan.txExt * rev : 0;
-    const total = calcTotal(plan, rev, useExt);
-    return { platform:pl, plan, tx, total };
-  });
+  // SHOPIFY
+  const sp = getPlan(shopifyPlans, rev);
+  const spLisens = Math.round((annual ? sp.usdY : sp.usdM) * NOK);
+  const spTx     = useExt ? Math.round(rev * sp.txExt) : 0;
+  const spTotal  = spLisens + spTx;
+
+  // Neste Shopify-plan breakeven
+  const spIdx  = shopifyPlans.indexOf(sp);
+  let spUpgrade = null;
+  if (spIdx < shopifyPlans.length - 1 && useExt) {
+    const next = shopifyPlans[spIdx + 1];
+    const nextLisens = Math.round((annual ? next.usdY : next.usdM) * NOK);
+    // Finn omsetning der neste plan blir billigere
+    // spLisens + rev*sp.txExt = nextLisens + rev*next.txExt
+    // rev*(sp.txExt - next.txExt) = nextLisens - spLisens
+    const diff = sp.txExt - next.txExt;
+    if (diff > 0) {
+      const breakeven = Math.ceil((nextLisens - spLisens) / diff);
+      if (breakeven > rev) {
+        spUpgrade = { plan: next.plan, breakeven };
+      } else {
+        spUpgrade = { plan: next.plan, already: true };
+      }
+    }
+  }
+
+  // WOOCOMMERCE
+  const wp = getPlan(wooPlans, rev);
+  const wpTotal = wp.hosting;
+
+  // LITIUM
+  const lp = getPlan(litiumPlans, rev);
+  const lpTotal = lp.lisens;
+
+  const results = [
+    {
+      key:'shopify', name:'Shopify', color:'#185fa5',
+      plan: sp.plan + (annual?' (årlig)':' (månedlig)'),
+      rows: [
+        { label:'Lisens', val: spLisens },
+        useExt
+          ? { label:`Tx-gebyr til Shopify (${(sp.txExt*100).toFixed(1)}%)`, val: spTx, warn: true }
+          : { label:'Tx-gebyr til Shopify', val: 0, zero:'Ingen (Shopify Payments)' },
+      ],
+      total: spTotal,
+      upgrade: spUpgrade,
+      warning: useExt ? `Shopify tar ${(sp.txExt*100).toFixed(1)}% ekstra i tillegg til hva Klarna/Nets/Dintero tar. Det kan utgjøre store beløp ved høy omsetning.` : null
+    },
+    {
+      key:'woo', name:'WooCommerce', color:'#3b6d11',
+      plan: wp.plan,
+      rows: [
+        { label:'Lisens til plattform', val: 0, zero:'Ingen' },
+        { label:'Hosting / vedlikehold (est.)', val: wp.hosting },
+      ],
+      total: wpTotal,
+      upgrade: null,
+      warning: null
+    },
+    {
+      key:'litium', name:'Litium', color:'#7F77DD',
+      plan: lp.plan,
+      rows: [
+        { label:'Lisens (indikativ)', val: lp.lisens },
+        { label:'Tx-gebyr til plattform', val: 0, zero:'Ingen' },
+      ],
+      total: lpTotal,
+      upgrade: null,
+      warning: null
+    }
+  ];
 
   const minTotal = Math.min(...results.map(r => r.total));
 
   document.getElementById('platform-grid').innerHTML = results.map(r => {
-    const color = platformColors[r.platform];
     const isBest = r.total === minTotal;
-    const upgradeMsg = getUpgradeMsg(r.platform, rev, useExt);
-    const txRate = useExt ? (r.plan.txExt*100).toFixed(1) : 0;
-
-    const rows = [];
-    if (r.plan.lisensNOK > 0) rows.push({ label:'Lisens', val: r.plan.lisensNOK });
-    if (r.plan.hosting   > 0) rows.push({ label:'Hosting / vedlikehold', val: r.plan.hosting });
-    if (r.tx             > 0) rows.push({ label:`Transaksjonsgebyr (${txRate}%)`, val: r.tx });
-    if (rows.length === 0)    rows.push({ label:'Ingen plattformgebyr', val: 0 });
-
     return `
     <div class="pcard${isBest?' cheapest':''}">
-      <div class="badge${isBest?' best':'  hidden'}">${isBest?'Lavest kostnad':'&nbsp;'}</div>
-      <div class="pname">${r.platform}</div>
-      <div class="plan-name">Anbefalt plan: <strong>${r.plan.plan}</strong></div>
-      ${rows.map(row=>`
+      <div class="badge${isBest?' best':'  hidden'}">${isBest?'Lavest plattformkostnad':'&nbsp;'}</div>
+      <div class="pname">${r.name}</div>
+      <div class="plan-tag">${r.plan}</div>
+      ${r.rows.map(row=>`
         <div class="cost-row">
           <span class="cost-label">${row.label}</span>
-          <span class="cost-val">${row.val===0?'–':fmt(row.val)}</span>
+          <span class="cost-val${row.warn?' warn':''}">${fmt(row.val, row.zero)}</span>
         </div>`).join('')}
       <div class="total-row">
         <span class="total-label">Per måned</span>
         <div>
-          <div class="total-val" style="color:${isBest?color:'#1a1a18'}">${fmt(r.total)}</div>
+          <div class="total-val" style="color:${isBest?r.color:'#1a1a18'}">${fmt(r.total)}</div>
           <div class="total-yr">${fmt(r.total*12)} / år</div>
         </div>
       </div>
-      ${upgradeMsg ? `<div class="upgrade-box">${upgradeMsg}</div>` : ''}
+      ${r.warning ? `<div class="warning-box"><strong>Merk:</strong> ${r.warning}</div>` : ''}
+      ${r.upgrade && !r.upgrade.already ? `<div class="upgrade-box">Oppgrader til <strong>${r.upgrade.plan}</strong> når omsetning passerer ${Math.round(r.upgrade.breakeven).toLocaleString('nb-NO')} kr/mnd – da blir lavere tx-gebyr lønnsomt.</div>` : ''}
+      ${r.upgrade && r.upgrade.already ? `<div class="upgrade-box"><strong>${r.upgrade.plan}</strong>-planen er allerede lønnsom på dette omsetningsnivået.</div>` : ''}
     </div>`;
   }).join('');
 
   // Tier table
   const tbody = document.getElementById('tier-body');
   tbody.innerHTML = '';
-  allPlans.forEach(p => {
-    const isActive = getRecommendedPlan(p.platform, rev).plan === p.plan &&
-                     getRecommendedPlan(p.platform, rev).platform === p.platform;
-    const txStr = p.txExt > 0 ? (p.txExt*100).toFixed(1)+'%' : '–';
-    const revStr = p.revMax >= 999999999
-      ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
-      : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr';
-    const lisensStr = (p.lisensNOK + p.hosting) > 0 ? fmt(p.lisensNOK + p.hosting) : 'Varierer';
-    tbody.insertAdjacentHTML('beforeend', `
-      <tr class="${isActive?'active-row':''}">
-        <td>${p.plan}</td>
-        <td>${p.platform}</td>
-        <td>${lisensStr}</td>
-        <td>${txStr}</td>
-        <td>${revStr}</td>
-      </tr>`);
-  });
 
-  document.getElementById('disclaimer').textContent =
-    'Shopify-priser i USD omregnet til NOK (kurs ~10,80). WooCommerce-tall er estimerte hosting- og vedlikeholdskostnader – ingen plattformgebyr. Litium-lisens er indikativ og avtales med partner. Eksterne betalingsgebyrer (Klarna, Nets etc.) kommer i tillegg for alle plattformer.';
+  const sections = [
+    {
+      label: 'Shopify',
+      plans: shopifyPlans.map(p => ({
+        plan: p.plan,
+        lisens: Math.round((annual ? p.usdY : p.usdM) * NOK),
+        tx: useExt ? (p.txExt*100).toFixed(1)+'%' : '–',
+        revRange: p.revMax >= 999999999
+          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
+          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: sp.plan === p.plan
+      }))
+    },
+    {
+      label: 'WooCommerce',
+      plans: wooPlans.map(p => ({
+        plan: p.plan,
+        lisens: p.hosting,
+        tx: '–',
+        revRange: p.revMax >= 999999999
+          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
+          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: wp.plan === p.plan
+      }))
+    },
+    {
+      label: 'Litium',
+      plans: litiumPlans.map(p => ({
+        plan: p.plan,
+        lisens: p.lisens,
+        tx: '–',
+        revRange: p.revMax >= 999999999
+          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
+          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: lp.plan === p.plan
+      }))
+    }
+  ];
+
+  sections.forEach(s => {
+    tbody.insertAdjacentHTML('beforeend',
+      `<tr class="platform-sep"><td colspan="4">${s.label}</td></tr>`);
+    s.plans.forEach(p => {
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr class="${p.active?'active-row':''}">
+          <td>${p.plan}${p.active?' ←':''}</td>
+          <td>${fmt(p.lisens)}</td>
+          <td>${p.tx}</td>
+          <td>${p.revRange}</td>
+        </tr>`);
+    });
+  });
 
   document.getElementById('result').classList.add('show');
   document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'});
