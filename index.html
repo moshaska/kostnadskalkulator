@@ -20,6 +20,9 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .range-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:#d3d1c7;border-radius:2px;outline:none}
 .range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#185fa5;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #185fa5}
 .range-val{font-size:14px;font-weight:500;min-width:120px;text-align:right}
+input#ext-pct{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:#d3d1c7;border-radius:2px;outline:none;display:block;margin:8px 0}
+input#ext-pct::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#185fa5;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #185fa5}
+.split-labels{display:flex;justify-content:space-between;margin-top:4px}
 .options{display:flex;flex-wrap:wrap;gap:8px}
 .opt{padding:7px 16px;border:0.5px solid #b4b2a9;border-radius:8px;font-size:13px;cursor:pointer;background:#fff;color:#5f5e5a;transition:all .15s;user-select:none}
 .opt:hover{border-color:#5f5e5a;color:#1a1a18}
@@ -32,7 +35,7 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .result-head{background:#f1efe8;padding:.85rem 1.25rem;font-size:13px;font-weight:500;color:#444441;border-bottom:0.5px solid #d3d1c7}
 .platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:1.25rem}
 @media(max-width:600px){.platform-grid{grid-template-columns:1fr}}
-.pcard{border-radius:10px;border:0.5px solid #d3d1c7;padding:1.25rem;background:#fff;display:flex;flex-direction:column;gap:0}
+.pcard{border-radius:10px;border:0.5px solid #d3d1c7;padding:1.25rem;background:#fff}
 .pcard.cheapest{border:2px solid #185fa5}
 .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:6px;margin-bottom:.6rem}
 .badge.best{background:#e6f1fb;color:#0c447c}
@@ -92,25 +95,16 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
       </div>
     </div>
     <div class="field">
-      <label>Betalingsløsning</label>
-      <div class="sub">Sett andelen av omsetning som går via ekstern løsning (f.eks. Vipps). Shopify tar ekstragebyr på den andelen.</div>
-      <div style="margin-top:.5rem">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:#5f5e5a;margin-bottom:6px">
-          <span>Shopify Payments</span>
-          <span>Ekstern (Vipps / Klarna / Nets)</span>
-        </div>
-        <div style="position:relative;height:36px;display:flex;align-items:center">
-          <div id="split-track" style="position:relative;width:100%;height:8px;border-radius:4px;overflow:hidden;cursor:pointer">
-            <div id="split-native" style="position:absolute;left:0;top:0;height:100%;background:#185fa5;transition:width .05s"></div>
-            <div id="split-ext" style="position:absolute;right:0;top:0;height:100%;background:#d3d1c7"></div>
-          </div>
-          <input type="range" id="ext-pct" min="0" max="100" step="1" value="0"
-            style="position:absolute;width:100%;opacity:0;cursor:pointer;height:36px;margin:0">
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px">
-          <span style="font-size:13px;font-weight:500;color:#185fa5" id="native-pct-label">100% Shopify Payments</span>
-          <span style="font-size:13px;font-weight:500;color:#888780" id="ext-pct-label">0% ekstern</span>
-        </div>
+      <label>Andel ekstern betalingsløsning</label>
+      <div class="sub">Dra for å sette hvor mye av omsetningen som går via Vipps, Klarna eller annen ekstern løsning. Shopify tar ekstragebyr på denne andelen.</div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#5f5e5a;margin-top:.5rem">
+        <span>0% ekstern</span>
+        <span>100% ekstern</span>
+      </div>
+      <input type="range" id="ext-pct" min="0" max="100" step="1" value="0">
+      <div class="split-labels">
+        <span style="font-size:13px;font-weight:500;color:#185fa5" id="native-pct-label">100% Shopify Payments</span>
+        <span style="font-size:13px;font-weight:500;color:#888780" id="ext-pct-label">0% ekstern</span>
       </div>
     </div>
   </div>
@@ -148,26 +142,24 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 const NOK = 10.80;
 
 const shopifyPlans = [
-  { plan:'Basic',    usdM:39,   usdY:29,   txExt:0.020, revMin:0,         revMax:1500000,
-    plusReasons: null },
-  { plan:'Grow',     usdM:105,  usdY:79,   txExt:0.010, revMin:1500000,   revMax:7000000,
-    plusReasons: null },
-  { plan:'Advanced', usdM:399,  usdY:299,  txExt:0.006, revMin:7000000,   revMax:25000000,
-    plusReasons: null },
-  { plan:'Plus',     usdM:2300, usdY:2300, txExt:0.002, revMin:25000000,  revMax:999999999,
-    plusReasons: ['Tilpasset checkout (UI Extensions)','Native B2B / grossistportal','Shopify Flow – avansert automatisering','Flere butikker under én konto (10 stores)','Dedikert support og launch manager'] },
+  { plan:'Basic',    usdM:39,   usdY:29,   txExt:0.020, revMin:0,        revMax:1500000,
+    plusReasons:null },
+  { plan:'Grow',     usdM:105,  usdY:79,   txExt:0.010, revMin:1500000,  revMax:7000000,
+    plusReasons:null },
+  { plan:'Advanced', usdM:399,  usdY:299,  txExt:0.006, revMin:7000000,  revMax:25000000,
+    plusReasons:null },
+  { plan:'Plus',     usdM:2300, usdY:2300, txExt:0.002, revMin:25000000, revMax:999999999,
+    plusReasons:['Tilpasset checkout (UI Extensions)','Native B2B / grossistportal','Shopify Flow – avansert automatisering','Flere butikker under én konto (10 stores)','Dedikert support og launch manager'] },
 ];
-
 const wooPlans = [
-  { plan:'Liten butikk',  hosting:700,  revMin:0,        revMax:500000 },
-  { plan:'Voksende',      hosting:1500, revMin:500000,   revMax:3000000 },
-  { plan:'Enterprise',    hosting:3500, revMin:3000000,  revMax:999999999 },
+  { plan:'Liten butikk', hosting:700,  revMin:0,       revMax:500000 },
+  { plan:'Voksende',     hosting:1500, revMin:500000,  revMax:3000000 },
+  { plan:'Enterprise',   hosting:3500, revMin:3000000, revMax:999999999 },
 ];
-
 const litiumPlans = [
-  { plan:'Growth',     lisens:8000,  revMin:0,        revMax:1000000 },
-  { plan:'Business',   lisens:15000, revMin:1000000,  revMax:4000000 },
-  { plan:'Enterprise', lisens:30000, revMin:4000000,  revMax:999999999 },
+  { plan:'Growth',     lisens:8000,  revMin:0,       revMax:1000000 },
+  { plan:'Business',   lisens:15000, revMin:1000000, revMax:4000000 },
+  { plan:'Enterprise', lisens:30000, revMin:4000000, revMax:999999999 },
 ];
 
 document.getElementById('billing').addEventListener('click', function(e) {
@@ -176,156 +168,125 @@ document.getElementById('billing').addEventListener('click', function(e) {
   this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
   t.classList.add('sel');
 });
+
 document.getElementById('rev').addEventListener('input', function() {
   document.getElementById('rev-out').textContent = Number(this.value).toLocaleString('nb-NO') + ' kr';
 });
 
-const extSlider = document.getElementById('ext-pct');
-function updateSplitUI() {
-  const v = parseInt(extSlider.value);
-  document.getElementById('split-native').style.width = (100-v) + '%';
-  document.getElementById('split-ext').style.width = v + '%';
-  document.getElementById('native-pct-label').textContent = (100-v) + '% Shopify Payments';
+document.getElementById('ext-pct').addEventListener('input', function() {
+  const v = parseInt(this.value);
+  document.getElementById('native-pct-label').textContent = (100 - v) + '% Shopify Payments';
+  document.getElementById('native-pct-label').style.color = v === 100 ? '#888780' : '#185fa5';
   document.getElementById('ext-pct-label').textContent = v + '% ekstern';
   document.getElementById('ext-pct-label').style.color = v > 0 ? '#a32d2d' : '#888780';
-}
-extSlider.addEventListener('input', updateSplitUI);
-updateSplitUI();
+});
 
 function getVal(id) { return document.getElementById(id).querySelector('.sel')?.dataset.val; }
 function fmt(n, zero) { return (n === 0 && zero) ? zero : Math.round(n).toLocaleString('nb-NO') + ' kr'; }
 function getPlan(plans, rev) {
-  return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length-1];
+  return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length - 1];
 }
 function getExtPct() { return parseInt(document.getElementById('ext-pct').value) / 100; }
 
-// State for selected plans
-const selectedPlan = { shopify: null, woo: null, litium: null };
+const selectedPlan = { shopify:null, woo:null, litium:null };
+let currentRev, currentAnnual;
+let recShopify, recWoo, recLitium;
 
-function renderShopifyCard(rev, annual, extPct, activePlanIdx, recommendedIdx) {
-  const p = shopifyPlans[activePlanIdx];
+function renderShopifyCard(rev, annual, extPct, activeIdx, recIdx) {
+  const p = shopifyPlans[activeIdx];
   const lisens = Math.round((annual ? p.usdY : p.usdM) * NOK);
   const extRev = Math.round(rev * extPct);
   const tx = Math.round(extRev * p.txExt);
   const total = lisens + tx;
-  const isPlus = p.plan === 'Plus';
-  const hasExt = extPct > 0;
 
-  const switcher = shopifyPlans.map((pl, i) => {
-    const isActive = i === activePlanIdx;
-    const isRec = i === recommendedIdx;
-    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('shopify',${i})">${pl.plan}</div>`;
-  }).join('');
+  const switcher = shopifyPlans.map((pl, i) =>
+    `<div class="plan-btn${i===activeIdx?' active':''}${i===recIdx?' recommended':''}" onclick="switchPlan('shopify',${i})">${pl.plan}</div>`
+  ).join('');
 
-  let extraBox = '';
-  if (hasExt && tx > 0) {
-    const extPctDisplay = Math.round(extPct * 100);
-    extraBox = `<div class="warning-box">${extPctDisplay}% av omsetningen (${fmt(extRev)}) går via ekstern løsning. Shopify tar ${(p.txExt*100).toFixed(1)}% ekstra på dette – i tillegg til hva Vipps/Klarna/Nets tar.</div>`;
+  let extra = '';
+  if (extPct > 0 && tx > 0) {
+    extra += `<div class="warning-box">${Math.round(extPct*100)}% av omsetningen (${fmt(extRev)}) går via ekstern løsning. Shopify tar ${(p.txExt*100).toFixed(1)}% ekstra på dette – i tillegg til hva Vipps/Klarna/Nets tar.</div>`;
   }
-  if (isPlus && p.plusReasons) {
-    extraBox += `<div class="plus-box"><strong>Plus er mer enn omsetning.</strong> Vurder Plus når du trenger:<br>${p.plusReasons.map(r=>'· '+r).join('<br>')}</div>`;
-  } else if (!isPlus && activePlanIdx !== recommendedIdx) {
-    const rec = shopifyPlans[recommendedIdx];
-    extraBox += `<div class="info-box">Anbefalt plan for dette omsetningsnivået er <strong>${rec.plan}</strong>.</div>`;
+  if (p.plusReasons) {
+    extra += `<div class="plus-box"><strong>Plus er mer enn omsetning.</strong> Vurder Plus når du trenger:<br>${p.plusReasons.map(r=>'· '+r).join('<br>')}</div>`;
+  } else if (activeIdx !== recIdx) {
+    extra += `<div class="info-box">Anbefalt plan for dette omsetningsnivået er <strong>${shopifyPlans[recIdx].plan}</strong>.</div>`;
   }
 
-  return `
-    <div class="pcard" id="card-shopify">
-      <div class="badge hidden">&nbsp;</div>
-      <div class="pname">Shopify</div>
-      <div class="plan-switcher">${switcher}</div>
-      <div class="cost-row"><span class="cost-label">Lisens</span><span class="cost-val">${fmt(lisens)}</span></div>
-      <div class="cost-row">
-        <span class="cost-label">Tx-gebyr til Shopify (${(p.txExt*100).toFixed(1)}% av ${Math.round(extPct*100)}% eks.)</span>
-        <span class="cost-val${hasExt&&tx>0?' warn':''}">${fmt(tx, 'Ingen')}</span>
-      </div>
-      <div class="total-row">
-        <span class="total-label">Per måned</span>
-        <div>
-          <div class="total-val" style="color:#185fa5">${fmt(total)}</div>
-          <div class="total-yr">${fmt(total*12)} / år</div>
-        </div>
-      </div>
-      ${extraBox}
-    </div>`;
+  return `<div class="pcard" id="card-shopify">
+    <div class="badge hidden">&nbsp;</div>
+    <div class="pname">Shopify</div>
+    <div class="plan-switcher">${switcher}</div>
+    <div class="cost-row"><span class="cost-label">Lisens</span><span class="cost-val">${fmt(lisens)}</span></div>
+    <div class="cost-row">
+      <span class="cost-label">Tx-gebyr Shopify (${(p.txExt*100).toFixed(1)}% av ${Math.round(extPct*100)}% eks.)</span>
+      <span class="cost-val${tx>0?' warn':''}">${fmt(tx,'Ingen')}</span>
+    </div>
+    <div class="total-row">
+      <span class="total-label">Per måned</span>
+      <div><div class="total-val" style="color:#185fa5">${fmt(total)}</div><div class="total-yr">${fmt(total*12)} / år</div></div>
+    </div>
+    ${extra}
+  </div>`;
 }
 
-function renderWooCard(rev, activeIdx, recommendedIdx) {
+function renderWooCard(rev, activeIdx, recIdx) {
   const p = wooPlans[activeIdx];
-  const total = p.hosting;
-  const switcher = wooPlans.map((pl, i) => {
-    const isActive = i === activeIdx;
-    const isRec = i === recommendedIdx;
-    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('woo',${i})">${pl.plan}</div>`;
-  }).join('');
-  let extraBox = activeIdx !== recommendedIdx
-    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${wooPlans[recommendedIdx].plan}</strong>.</div>` : '';
-  return `
-    <div class="pcard" id="card-woo">
-      <div class="badge hidden">&nbsp;</div>
-      <div class="pname">WooCommerce</div>
-      <div class="plan-switcher">${switcher}</div>
-      <div class="cost-row"><span class="cost-label">Lisens til plattform</span><span class="cost-val">Ingen</span></div>
-      <div class="cost-row"><span class="cost-label">Hosting / vedlikehold (est.)</span><span class="cost-val">${fmt(p.hosting)}</span></div>
-      <div class="total-row">
-        <span class="total-label">Per måned</span>
-        <div>
-          <div class="total-val" style="color:#3b6d11">${fmt(total)}</div>
-          <div class="total-yr">${fmt(total*12)} / år</div>
-        </div>
-      </div>
-      ${extraBox}
-    </div>`;
+  const switcher = wooPlans.map((pl, i) =>
+    `<div class="plan-btn${i===activeIdx?' active':''}${i===recIdx?' recommended':''}" onclick="switchPlan('woo',${i})">${pl.plan}</div>`
+  ).join('');
+  const extra = activeIdx !== recIdx
+    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${wooPlans[recIdx].plan}</strong>.</div>` : '';
+  return `<div class="pcard" id="card-woo">
+    <div class="badge hidden">&nbsp;</div>
+    <div class="pname">WooCommerce</div>
+    <div class="plan-switcher">${switcher}</div>
+    <div class="cost-row"><span class="cost-label">Lisens til plattform</span><span class="cost-val">Ingen</span></div>
+    <div class="cost-row"><span class="cost-label">Hosting / vedlikehold (est.)</span><span class="cost-val">${fmt(p.hosting)}</span></div>
+    <div class="total-row">
+      <span class="total-label">Per måned</span>
+      <div><div class="total-val" style="color:#3b6d11">${fmt(p.hosting)}</div><div class="total-yr">${fmt(p.hosting*12)} / år</div></div>
+    </div>
+    ${extra}
+  </div>`;
 }
 
-function renderLitiumCard(rev, activeIdx, recommendedIdx) {
+function renderLitiumCard(rev, activeIdx, recIdx) {
   const p = litiumPlans[activeIdx];
-  const total = p.lisens;
-  const switcher = litiumPlans.map((pl, i) => {
-    const isActive = i === activeIdx;
-    const isRec = i === recommendedIdx;
-    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('litium',${i})">${pl.plan}</div>`;
-  }).join('');
-  let extraBox = activeIdx !== recommendedIdx
-    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${litiumPlans[recommendedIdx].plan}</strong>.</div>` : '';
-  return `
-    <div class="pcard" id="card-litium">
-      <div class="badge hidden">&nbsp;</div>
-      <div class="pname">Litium</div>
-      <div class="plan-switcher">${switcher}</div>
-      <div class="cost-row"><span class="cost-label">Lisens (indikativ)</span><span class="cost-val">${fmt(p.lisens)}</span></div>
-      <div class="cost-row"><span class="cost-label">Tx-gebyr til plattform</span><span class="cost-val">Ingen</span></div>
-      <div class="total-row">
-        <span class="total-label">Per måned</span>
-        <div>
-          <div class="total-val" style="color:#7F77DD">${fmt(total)}</div>
-          <div class="total-yr">${fmt(total*12)} / år</div>
-        </div>
-      </div>
-      ${extraBox}
-    </div>`;
+  const switcher = litiumPlans.map((pl, i) =>
+    `<div class="plan-btn${i===activeIdx?' active':''}${i===recIdx?' recommended':''}" onclick="switchPlan('litium',${i})">${pl.plan}</div>`
+  ).join('');
+  const extra = activeIdx !== recIdx
+    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${litiumPlans[recIdx].plan}</strong>.</div>` : '';
+  return `<div class="pcard" id="card-litium">
+    <div class="badge hidden">&nbsp;</div>
+    <div class="pname">Litium</div>
+    <div class="plan-switcher">${switcher}</div>
+    <div class="cost-row"><span class="cost-label">Lisens (indikativ)</span><span class="cost-val">${fmt(p.lisens)}</span></div>
+    <div class="cost-row"><span class="cost-label">Tx-gebyr til plattform</span><span class="cost-val">Ingen</span></div>
+    <div class="total-row">
+      <span class="total-label">Per måned</span>
+      <div><div class="total-val" style="color:#7F77DD">${fmt(p.lisens)}</div><div class="total-yr">${fmt(p.lisens*12)} / år</div></div>
+    </div>
+    ${extra}
+  </div>`;
 }
 
-let currentRev, currentAnnual, currentUseExt;
-let recShopify, recWoo, recLitium;
+function renderCards() {
+  document.getElementById('platform-grid').innerHTML =
+    renderShopifyCard(currentRev, currentAnnual, getExtPct(), selectedPlan.shopify, recShopify) +
+    renderWooCard(currentRev, selectedPlan.woo, recWoo) +
+    renderLitiumCard(currentRev, selectedPlan.litium, recLitium);
+}
 
 window.switchPlan = function(platform, idx) {
   selectedPlan[platform] = idx;
   renderCards();
 };
 
-function renderCards() {
-  const grid = document.getElementById('platform-grid');
-  grid.innerHTML =
-    renderShopifyCard(currentRev, currentAnnual, getExtPct(), selectedPlan.shopify, recShopify) +
-    renderWooCard(currentRev, selectedPlan.woo, recWoo) +
-    renderLitiumCard(currentRev, selectedPlan.litium, recLitium);
-}
-
 function calculate() {
   currentRev    = parseInt(document.getElementById('rev').value);
   currentAnnual = getVal('billing') === 'annual';
-  currentUseExt = getExtPct() > 0;
 
   recShopify = shopifyPlans.indexOf(getPlan(shopifyPlans, currentRev));
   recWoo     = wooPlans.indexOf(getPlan(wooPlans, currentRev));
@@ -337,38 +298,32 @@ function calculate() {
 
   renderCards();
 
-  // Tier table
   const tbody = document.getElementById('tier-body');
   tbody.innerHTML = '';
-  const sections = [
+  const annual = currentAnnual;
+  [
     { label:'Shopify', plans: shopifyPlans.map((p,i) => ({
-        plan: p.plan, lisens: Math.round((currentAnnual?p.usdY:p.usdM)*NOK),
-        tx: currentUseExt ? (p.txExt*100).toFixed(1)+'%' : '–',
-        revRange: p.revMax>=999999999 ? (p.revMin/1000000).toFixed(0)+' MNOK+/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
-        active: i === recShopify
-      }))},
+        name: p.plan, lisens: Math.round((annual?p.usdY:p.usdM)*NOK),
+        tx: (p.txExt*100).toFixed(1)+'%',
+        range: p.revMax>=999999999 ? (p.revMin/1000000).toFixed(0)+' MNOK+' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: i===recShopify })) },
     { label:'WooCommerce', plans: wooPlans.map((p,i) => ({
-        plan: p.plan, lisens: p.hosting,
-        tx: '–',
-        revRange: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
-        active: i === recWoo
-      }))},
+        name: p.plan, lisens: p.hosting, tx:'–',
+        range: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: i===recWoo })) },
     { label:'Litium', plans: litiumPlans.map((p,i) => ({
-        plan: p.plan, lisens: p.lisens,
-        tx: '–',
-        revRange: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
-        active: i === recLitium
-      }))}
-  ];
-  sections.forEach(s => {
+        name: p.plan, lisens: p.lisens, tx:'–',
+        range: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
+        active: i===recLitium })) },
+  ].forEach(s => {
     tbody.insertAdjacentHTML('beforeend', `<tr class="platform-sep"><td colspan="4">${s.label}</td></tr>`);
     s.plans.forEach(p => {
       tbody.insertAdjacentHTML('beforeend', `
         <tr class="${p.active?'active-row':''}">
-          <td>${p.plan}${p.active?' ★':''}</td>
+          <td>${p.name}${p.active?' ★':''}</td>
           <td>${fmt(p.lisens)}</td>
           <td>${p.tx}</td>
-          <td>${p.revRange}</td>
+          <td>${p.range}</td>
         </tr>`);
     });
   });
