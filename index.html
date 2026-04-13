@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kostnadskalkulator – e-handelsplattformer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;min-height:100vh;padding:2rem 1rem}
+.page{max-width:860px;margin:0 auto}
+h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
+.subtitle{font-size:14px;color:#5f5e5a;margin-bottom:2rem}
+.card{background:#fff;border-radius:12px;border:0.5px solid #d3d1c7;padding:1.5rem;margin-bottom:1.25rem}
+.section-title{font-size:11px;font-weight:500;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1.25rem}
+.field{margin-bottom:1.25rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:14px;color:#1a1a18;margin-bottom:.4rem;font-weight:500}
+.range-row{display:flex;align-items:center;gap:12px}
+.range-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:#d3d1c7;border-radius:2px;outline:none}
+.range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#185fa5;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #185fa5}
+.range-val{font-size:14px;font-weight:500;min-width:110px;text-align:right}
+.options{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:7px 16px;border:0.5px solid #b4b2a9;border-radius:8px;font-size:13px;cursor:pointer;background:#fff;color:#5f5e5a;transition:all .15s;user-select:none}
+.opt:hover{border-color:#5f5e5a;color:#1a1a18}
+.opt.sel{background:#e6f1fb;border-color:#185fa5;color:#0c447c;font-weight:500}
+.btn-calc{display:block;width:100%;padding:12px;background:#185fa5;border:none;border-radius:8px;font-size:15px;font-weight:500;color:#fff;cursor:pointer;margin-top:.5rem;transition:opacity .15s}
+.btn-calc:hover{opacity:.88}
+.result{display:none;margin-top:1.5rem}
+.result.show{display:block}
+.result-card{background:#fff;border-radius:12px;border:0.5px solid #d3d1c7;overflow:hidden;margin-bottom:1.25rem}
+.result-head{background:#f1efe8;padding:.85rem 1.25rem;font-size:13px;font-weight:500;color:#444441;border-bottom:0.5px solid #d3d1c7}
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:1.25rem}
+@media(max-width:580px){.platform-grid{grid-template-columns:1fr}}
+.pcard{border-radius:10px;border:0.5px solid #d3d1c7;padding:1.25rem;background:#fff}
+.pcard.cheapest{border:2px solid #185fa5}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:6px;margin-bottom:.6rem}
+.badge.best{background:#e6f1fb;color:#0c447c}
+.badge.hidden{visibility:hidden;background:transparent}
+.pname{font-size:17px;font-weight:500;margin-bottom:.2rem}
+.plan-name{font-size:12px;color:#5f5e5a;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:0.5px solid #f1efe8}
+.plan-name strong{color:#1a1a18;font-weight:500}
+.cost-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:0.5px solid #f1efe8;font-size:13px}
+.cost-row:last-of-type{border-bottom:none}
+.cost-label{color:#5f5e5a}
+.cost-val{font-weight:500;color:#1a1a18}
+.total-row{display:flex;justify-content:space-between;align-items:center;margin-top:.85rem;padding-top:.85rem;border-top:1px solid #d3d1c7}
+.total-label{font-size:13px;font-weight:500}
+.total-val{font-size:22px;font-weight:500}
+.total-yr{font-size:11px;color:#888780;text-align:right;margin-top:1px}
+.upgrade-box{margin-top:.85rem;background:#f1efe8;border-radius:6px;padding:.6rem .75rem;font-size:11px;color:#444441;line-height:1.5}
+.upgrade-box strong{color:#1a1a18;font-weight:500}
+.disclaimer{font-size:11px;color:#888780;line-height:1.6;padding:.85rem 1.25rem;border-top:0.5px solid #d3d1c7}
+
+.breakdown-wrap{padding:1rem 1.25rem}
+.tier-table{width:100%;border-collapse:collapse;font-size:12px}
+.tier-table th{text-align:left;color:#888780;font-weight:500;padding:4px 8px 8px;border-bottom:0.5px solid #d3d1c7}
+.tier-table th:not(:first-child){text-align:center}
+.tier-table td{padding:6px 8px;border-bottom:0.5px solid #f1efe8;color:#5f5e5a;vertical-align:middle}
+.tier-table td:not(:first-child){text-align:center}
+.tier-table tr.active-row td{color:#1a1a18;font-weight:500;background:#f5f9fe}
+.tier-table tr.active-row td:first-child{border-left:3px solid #185fa5;padding-left:5px}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Kostnadskalkulator</h1>
+  <p class="subtitle">Se anbefalt plan og estimerte kostnader per plattform basert på din omsetning</p>
+
+  <div class="card">
+    <div class="section-title">Din nettbutikk</div>
+    <div class="field">
+      <label>Månedlig omsetning</label>
+      <div class="range-row">
+        <input type="range" id="rev" min="50000" max="15000000" step="50000" value="500000">
+        <span class="range-val" id="rev-out">500 000 kr</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Betalingsløsning</label>
+      <div class="options" id="payment">
+        <div class="opt sel" data-val="native">Plattformens egen løsning</div>
+        <div class="opt" data-val="external">Ekstern (Klarna, Nets, Dintero)</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">Beregn kostnader</button>
+
+  <div class="result" id="result">
+    <div class="result-card">
+      <div class="result-head" id="result-head">Anbefalt plan og estimert månedskostnad</div>
+      <div class="platform-grid" id="platform-grid"></div>
+      <div class="disclaimer" id="disclaimer"></div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-head">Når bør du bytte plan? – alle terskler</div>
+      <div class="breakdown-wrap">
+        <table class="tier-table" id="tier-table">
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th>Plattform</th>
+              <th>Månedlig lisens</th>
+              <th>Tx-gebyr (ekstern)</th>
+              <th>Anbefalt omsetning</th>
+            </tr>
+          </thead>
+          <tbody id="tier-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const NOK = 10.80;
+
+const allPlans = [
+  { platform:'Shopify', plan:'Basic',    lisensNOK: Math.round(29*NOK),   txExt:0.020, txNative:0,     revMin:0,         revMax:1500000,  hosting:0 },
+  { platform:'Shopify', plan:'Shopify',  lisensNOK: Math.round(79*NOK),   txExt:0.010, txNative:0,     revMin:1500000,   revMax:6000000,  hosting:0 },
+  { platform:'Shopify', plan:'Advanced', lisensNOK: Math.round(299*NOK),  txExt:0.005, txNative:0,     revMin:6000000,   revMax:25000000, hosting:0 },
+  { platform:'Shopify', plan:'Plus',     lisensNOK: Math.round(2300*NOK), txExt:0.002, txNative:0,     revMin:25000000,  revMax:999999999,hosting:0 },
+
+  { platform:'WooCommerce', plan:'Starter',    lisensNOK:0, txExt:0, txNative:0, revMin:0,        revMax:500000,   hosting:600  },
+  { platform:'WooCommerce', plan:'Business',   lisensNOK:0, txExt:0, txNative:0, revMin:500000,   revMax:3000000,  hosting:1400 },
+  { platform:'WooCommerce', plan:'Enterprise', lisensNOK:0, txExt:0, txNative:0, revMin:3000000,  revMax:999999999,hosting:3000 },
+
+  { platform:'Litium', plan:'Growth',     lisensNOK:8000,  txExt:0, txNative:0, revMin:0,        revMax:1000000,  hosting:0 },
+  { platform:'Litium', plan:'Business',   lisensNOK:15000, txExt:0, txNative:0, revMin:1000000,  revMax:4000000,  hosting:0 },
+  { platform:'Litium', plan:'Enterprise', lisensNOK:30000, txExt:0, txNative:0, revMin:4000000,  revMax:999999999,hosting:0 },
+];
+
+const platformColors = { Shopify:'#185fa5', WooCommerce:'#3b6d11', Litium:'#7F77DD' };
+
+document.getElementById('rev').addEventListener('input', function() {
+  document.getElementById('rev-out').textContent = Number(this.value).toLocaleString('nb-NO') + ' kr';
+});
+document.getElementById('payment').addEventListener('click', function(e) {
+  const t = e.target.closest('.opt');
+  if (!t) return;
+  this.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  t.classList.add('sel');
+});
+
+function getVal(id) { return document.getElementById(id).querySelector('.sel')?.dataset.val; }
+function fmt(n) { return Math.round(n).toLocaleString('nb-NO') + ' kr'; }
+
+function getRecommendedPlan(platform, rev) {
+  const plans = allPlans.filter(p => p.platform === platform);
+  return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length-1];
+}
+
+function calcTotal(plan, rev, useExt) {
+  const tx = useExt ? plan.txExt * rev : 0;
+  return plan.lisensNOK + plan.hosting + tx;
+}
+
+function getUpgradeMsg(platform, rev, useExt) {
+  const plans = allPlans.filter(p => p.platform === platform);
+  const cur = plans.findIndex(p => rev >= p.revMin && rev < p.revMax);
+  if (cur === -1 || cur === plans.length - 1) return null;
+  const next = plans[cur + 1];
+  const curPlan = plans[cur];
+
+  if (platform === 'Shopify' && useExt) {
+    const curCost  = calcTotal(curPlan, next.revMin, true);
+    const nextCost = calcTotal(next, next.revMin, true);
+    if (nextCost < curCost) {
+      return `Oppgrader til <strong>${next.plan}</strong> når omsetning passerer ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd – lavere transaksjonsgebyr gjør det lønnsomt.`;
+    }
+    return `Neste plan: <strong>${next.plan}</strong> fra ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd.`;
+  }
+  return `Neste plan: <strong>${next.plan}</strong> anbefales fra ${(next.revMin/1000).toLocaleString('nb-NO')} 000 kr/mnd.`;
+}
+
+function calculate() {
+  const rev    = parseInt(document.getElementById('rev').value);
+  const useExt = getVal('payment') === 'external';
+
+  const platforms = ['Shopify','WooCommerce','Litium'];
+  const results = platforms.map(pl => {
+    const plan  = getRecommendedPlan(pl, rev);
+    const tx    = useExt ? plan.txExt * rev : 0;
+    const total = calcTotal(plan, rev, useExt);
+    return { platform:pl, plan, tx, total };
+  });
+
+  const minTotal = Math.min(...results.map(r => r.total));
+
+  document.getElementById('platform-grid').innerHTML = results.map(r => {
+    const color = platformColors[r.platform];
+    const isBest = r.total === minTotal;
+    const upgradeMsg = getUpgradeMsg(r.platform, rev, useExt);
+    const txRate = useExt ? (r.plan.txExt*100).toFixed(1) : 0;
+
+    const rows = [];
+    if (r.plan.lisensNOK > 0) rows.push({ label:'Lisens', val: r.plan.lisensNOK });
+    if (r.plan.hosting   > 0) rows.push({ label:'Hosting / vedlikehold', val: r.plan.hosting });
+    if (r.tx             > 0) rows.push({ label:`Transaksjonsgebyr (${txRate}%)`, val: r.tx });
+    if (rows.length === 0)    rows.push({ label:'Ingen plattformgebyr', val: 0 });
+
+    return `
+    <div class="pcard${isBest?' cheapest':''}">
+      <div class="badge${isBest?' best':'  hidden'}">${isBest?'Lavest kostnad':'&nbsp;'}</div>
+      <div class="pname">${r.platform}</div>
+      <div class="plan-name">Anbefalt plan: <strong>${r.plan.plan}</strong></div>
+      ${rows.map(row=>`
+        <div class="cost-row">
+          <span class="cost-label">${row.label}</span>
+          <span class="cost-val">${row.val===0?'–':fmt(row.val)}</span>
+        </div>`).join('')}
+      <div class="total-row">
+        <span class="total-label">Per måned</span>
+        <div>
+          <div class="total-val" style="color:${isBest?color:'#1a1a18'}">${fmt(r.total)}</div>
+          <div class="total-yr">${fmt(r.total*12)} / år</div>
+        </div>
+      </div>
+      ${upgradeMsg ? `<div class="upgrade-box">${upgradeMsg}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  // Tier table
+  const tbody = document.getElementById('tier-body');
+  tbody.innerHTML = '';
+  allPlans.forEach(p => {
+    const isActive = getRecommendedPlan(p.platform, rev).plan === p.plan &&
+                     getRecommendedPlan(p.platform, rev).platform === p.platform;
+    const txStr = p.txExt > 0 ? (p.txExt*100).toFixed(1)+'%' : '–';
+    const revStr = p.revMax >= 999999999
+      ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
+      : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr';
+    const lisensStr = (p.lisensNOK + p.hosting) > 0 ? fmt(p.lisensNOK + p.hosting) : 'Varierer';
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr class="${isActive?'active-row':''}">
+        <td>${p.plan}</td>
+        <td>${p.platform}</td>
+        <td>${lisensStr}</td>
+        <td>${txStr}</td>
+        <td>${revStr}</td>
+      </tr>`);
+  });
+
+  document.getElementById('disclaimer').textContent =
+    'Shopify-priser i USD omregnet til NOK (kurs ~10,80). WooCommerce-tall er estimerte hosting- og vedlikeholdskostnader – ingen plattformgebyr. Litium-lisens er indikativ og avtales med partner. Eksterne betalingsgebyrer (Klarna, Nets etc.) kommer i tillegg for alle plattformer.';
+
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body>
+</html>
