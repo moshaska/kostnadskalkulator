@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;min-height:100vh;padding:2rem 1rem}
-.page{max-width:900px;margin:0 auto}
+.page{max-width:920px;margin:0 auto}
 h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .subtitle{font-size:14px;color:#5f5e5a;margin-bottom:2rem}
 .card{background:#fff;border-radius:12px;border:0.5px solid #d3d1c7;padding:1.5rem;margin-bottom:1.25rem}
@@ -19,7 +19,7 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .range-row{display:flex;align-items:center;gap:12px}
 .range-row input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:#d3d1c7;border-radius:2px;outline:none}
 .range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#185fa5;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #185fa5}
-.range-val{font-size:14px;font-weight:500;min-width:110px;text-align:right}
+.range-val{font-size:14px;font-weight:500;min-width:120px;text-align:right}
 .options{display:flex;flex-wrap:wrap;gap:8px}
 .opt{padding:7px 16px;border:0.5px solid #b4b2a9;border-radius:8px;font-size:13px;cursor:pointer;background:#fff;color:#5f5e5a;transition:all .15s;user-select:none}
 .opt:hover{border-color:#5f5e5a;color:#1a1a18}
@@ -31,14 +31,18 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .result-card{background:#fff;border-radius:12px;border:0.5px solid #d3d1c7;overflow:hidden;margin-bottom:1.25rem}
 .result-head{background:#f1efe8;padding:.85rem 1.25rem;font-size:13px;font-weight:500;color:#444441;border-bottom:0.5px solid #d3d1c7}
 .platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:1.25rem}
-@media(max-width:580px){.platform-grid{grid-template-columns:1fr}}
-.pcard{border-radius:10px;border:0.5px solid #d3d1c7;padding:1.25rem;background:#fff}
+@media(max-width:600px){.platform-grid{grid-template-columns:1fr}}
+.pcard{border-radius:10px;border:0.5px solid #d3d1c7;padding:1.25rem;background:#fff;display:flex;flex-direction:column;gap:0}
 .pcard.cheapest{border:2px solid #185fa5}
 .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:6px;margin-bottom:.6rem}
 .badge.best{background:#e6f1fb;color:#0c447c}
 .badge.hidden{visibility:hidden;background:transparent}
-.pname{font-size:17px;font-weight:500;margin-bottom:.2rem}
-.plan-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;margin-bottom:.85rem;background:#f1efe8;color:#444441}
+.pname{font-size:17px;font-weight:500;margin-bottom:.75rem}
+.plan-switcher{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.85rem}
+.plan-btn{padding:4px 10px;border:0.5px solid #b4b2a9;border-radius:6px;font-size:11px;cursor:pointer;background:#fff;color:#5f5e5a;transition:all .12s;user-select:none;white-space:nowrap}
+.plan-btn:hover{border-color:#5f5e5a;color:#1a1a18}
+.plan-btn.active{background:#e6f1fb;border-color:#185fa5;color:#0c447c;font-weight:500}
+.plan-btn.recommended::after{content:' ★';font-size:9px}
 .cost-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:0.5px solid #f1efe8;font-size:13px}
 .cost-row:last-of-type{border-bottom:none}
 .cost-label{color:#5f5e5a;flex:1}
@@ -48,16 +52,17 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 .total-label{font-size:13px;font-weight:500}
 .total-val{font-size:22px;font-weight:500}
 .total-yr{font-size:11px;color:#888780;text-align:right;margin-top:1px}
-.upgrade-box{margin-top:.85rem;background:#f1efe8;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#444441;line-height:1.6}
-.upgrade-box strong{color:#1a1a18;font-weight:500}
+.info-box{margin-top:.85rem;background:#f1efe8;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#444441;line-height:1.6}
+.info-box strong{color:#1a1a18;font-weight:500}
 .warning-box{margin-top:.85rem;background:#fcebeb;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#791f1f;line-height:1.6}
-.warning-box strong{font-weight:500}
+.plus-box{margin-top:.85rem;background:#eeedfe;border-radius:6px;padding:.65rem .75rem;font-size:11px;color:#3c3489;line-height:1.6}
+.plus-box strong{font-weight:500}
 .disclaimer{font-size:11px;color:#888780;line-height:1.6;padding:.85rem 1.25rem;border-top:0.5px solid #d3d1c7}
 .tier-wrap{padding:1rem 1.25rem;overflow-x:auto}
-.tier-table{width:100%;border-collapse:collapse;font-size:12px;min-width:540px}
+.tier-table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
 .tier-table th{text-align:left;color:#888780;font-weight:500;padding:4px 10px 10px;border-bottom:0.5px solid #d3d1c7;white-space:nowrap}
 .tier-table th:not(:first-child){text-align:right}
-.tier-table td{padding:7px 10px;border-bottom:0.5px solid #f1efe8;color:#5f5e5a;vertical-align:middle}
+.tier-table td{padding:7px 10px;border-bottom:0.5px solid #f1efe8;color:#5f5e5a}
 .tier-table td:not(:first-child){text-align:right}
 .tier-table tr.active-row td{color:#1a1a18;font-weight:500;background:#f5f9fe}
 .tier-table tr.active-row td:first-child{border-left:3px solid #185fa5;padding-left:7px}
@@ -67,20 +72,20 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 <body>
 <div class="page">
   <h1>Kostnadskalkulator</h1>
-  <p class="subtitle">Anbefalt plan og estimerte plattformkostnader per måned – Shopify, WooCommerce og Litium</p>
+  <p class="subtitle">Anbefalt plan og estimerte plattformkostnader – Shopify, WooCommerce og Litium</p>
 
   <div class="card">
     <div class="section-title">Din nettbutikk</div>
     <div class="field">
       <label>Månedlig omsetning</label>
       <div class="range-row">
-        <input type="range" id="rev" min="50000" max="15000000" step="50000" value="500000">
+        <input type="range" id="rev" min="50000" max="50000000" step="50000" value="500000">
         <span class="range-val" id="rev-out">500 000 kr</span>
       </div>
     </div>
     <div class="field">
-      <label>Faktureringsperiode Shopify</label>
-      <div class="sub">Årlig betaling gir 25% rabatt</div>
+      <label>Faktureringsperiode (Shopify)</label>
+      <div class="sub">Årlig betaling gir 25% rabatt på Basic, Grow og Advanced</div>
       <div class="options" id="billing">
         <div class="opt sel" data-val="monthly">Månedlig</div>
         <div class="opt" data-val="annual">Årlig (–25%)</div>
@@ -88,7 +93,7 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
     </div>
     <div class="field">
       <label>Betalingsløsning</label>
-      <div class="sub">Shopify tar ekstra gebyr ved ekstern løsning – i tillegg til hva Klarna/Nets/Dintero tar</div>
+      <div class="sub">Shopify tar ekstragebyr ved ekstern løsning – kommer i tillegg til hva Klarna/Nets/Dintero tar</div>
       <div class="options" id="payment">
         <div class="opt sel" data-val="native">Shopify Payments (ingen ekstragebyr)</div>
         <div class="opt" data-val="external">Ekstern (Klarna, Nets, Dintero)</div>
@@ -100,23 +105,22 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 
   <div class="result" id="result">
     <div class="result-card">
-      <div class="result-head">Anbefalt plan og estimert månedskostnad til plattform</div>
+      <div class="result-head">Plattformkostnader per måned – klikk plan for å sammenligne</div>
       <div class="platform-grid" id="platform-grid"></div>
       <div class="disclaimer">
-        Shopify-priser i USD omregnet til NOK (kurs 10,80). Viser kun plattformkostnader – gebyrer fra Klarna, Nets, Dintero og kortselskaper kommer i tillegg for alle plattformer. WooCommerce-tall er estimert hosting og vedlikehold. Litium-lisens er indikativ og avtales med partner.
+        Shopify-priser i USD omregnet til NOK (kurs 10,80). Viser kun plattformkostnader – gebyrer fra Klarna, Nets, Dintero og kortselskaper kommer i tillegg for alle plattformer. WooCommerce-tall er estimert hosting og vedlikehold. Litium-lisens er indikativ og avtales med partner. ★ = anbefalt plan basert på omsetning.
       </div>
     </div>
-
     <div class="result-card">
-      <div class="result-head">Alle planterskler – når bør du bytte?</div>
+      <div class="result-head">Alle planterskler</div>
       <div class="tier-wrap">
         <table class="tier-table">
           <thead>
             <tr>
               <th>Plattform / Plan</th>
               <th>Lisens/mnd</th>
-              <th>Tx-gebyr (ekstern betaling)</th>
-              <th>Anbefalt omsetning/mnd</th>
+              <th>Tx-gebyr (ekstern)</th>
+              <th>Typisk omsetning/mnd</th>
             </tr>
           </thead>
           <tbody id="tier-body"></tbody>
@@ -129,22 +133,23 @@ h1{font-size:22px;font-weight:500;margin-bottom:.25rem}
 <script>
 const NOK = 10.80;
 
-// Shopify: månedlig / årlig lisens i USD, tx ved ekstern betaling
 const shopifyPlans = [
-  { plan:'Basic',    usdM:39,   usdY:29,   txExt:0.020, revMin:0,         revMax:1500000 },
-  { plan:'Grow',     usdM:105,  usdY:79,   txExt:0.010, revMin:1500000,   revMax:7000000 },
-  { plan:'Advanced', usdM:399,  usdY:299,  txExt:0.006, revMin:7000000,   revMax:25000000 },
-  { plan:'Plus',     usdM:2300, usdY:2300, txExt:0.002, revMin:25000000,  revMax:999999999 },
+  { plan:'Basic',    usdM:39,   usdY:29,   txExt:0.020, revMin:0,         revMax:1500000,
+    plusReasons: null },
+  { plan:'Grow',     usdM:105,  usdY:79,   txExt:0.010, revMin:1500000,   revMax:7000000,
+    plusReasons: null },
+  { plan:'Advanced', usdM:399,  usdY:299,  txExt:0.006, revMin:7000000,   revMax:25000000,
+    plusReasons: null },
+  { plan:'Plus',     usdM:2300, usdY:2300, txExt:0.002, revMin:25000000,  revMax:999999999,
+    plusReasons: ['Tilpasset checkout (UI Extensions)','Native B2B / grossistportal','Shopify Flow – avansert automatisering','Flere butikker under én konto (10 stores)','Dedikert support og launch manager'] },
 ];
 
-// WooCommerce: ingen lisens, estimert hosting+vedlikehold
 const wooPlans = [
-  { plan:'Liten butikk',  lisens:0, hosting:700,  revMin:0,        revMax:500000 },
-  { plan:'Voksende',      lisens:0, hosting:1500, revMin:500000,   revMax:3000000 },
-  { plan:'Enterprise',    lisens:0, hosting:3500, revMin:3000000,  revMax:999999999 },
+  { plan:'Liten butikk',  hosting:700,  revMin:0,        revMax:500000 },
+  { plan:'Voksende',      hosting:1500, revMin:500000,   revMax:3000000 },
+  { plan:'Enterprise',    hosting:3500, revMin:3000000,  revMax:999999999 },
 ];
 
-// Litium: indikativ lisens
 const litiumPlans = [
   { plan:'Growth',     lisens:8000,  revMin:0,        revMax:1000000 },
   { plan:'Business',   lisens:15000, revMin:1000000,  revMax:4000000 },
@@ -164,166 +169,174 @@ document.getElementById('rev').addEventListener('input', function() {
 });
 
 function getVal(id) { return document.getElementById(id).querySelector('.sel')?.dataset.val; }
-function fmt(n, zero) { return n === 0 && zero ? zero : Math.round(n).toLocaleString('nb-NO') + ' kr'; }
-
+function fmt(n, zero) { return (n === 0 && zero) ? zero : Math.round(n).toLocaleString('nb-NO') + ' kr'; }
 function getPlan(plans, rev) {
   return plans.find(p => rev >= p.revMin && rev < p.revMax) || plans[plans.length-1];
 }
 
-function calculate() {
-  const rev     = parseInt(document.getElementById('rev').value);
-  const annual  = getVal('billing') === 'annual';
-  const useExt  = getVal('payment') === 'external';
+// State for selected plans
+const selectedPlan = { shopify: null, woo: null, litium: null };
 
-  // SHOPIFY
-  const sp = getPlan(shopifyPlans, rev);
-  const spLisens = Math.round((annual ? sp.usdY : sp.usdM) * NOK);
-  const spTx     = useExt ? Math.round(rev * sp.txExt) : 0;
-  const spTotal  = spLisens + spTx;
+function renderShopifyCard(rev, annual, useExt, activePlanIdx, recommendedIdx) {
+  const p = shopifyPlans[activePlanIdx];
+  const lisens = Math.round((annual ? p.usdY : p.usdM) * NOK);
+  const tx = useExt ? Math.round(rev * p.txExt) : 0;
+  const total = lisens + tx;
+  const isPlus = p.plan === 'Plus';
 
-  // Neste Shopify-plan breakeven
-  const spIdx  = shopifyPlans.indexOf(sp);
-  let spUpgrade = null;
-  if (spIdx < shopifyPlans.length - 1 && useExt) {
-    const next = shopifyPlans[spIdx + 1];
-    const nextLisens = Math.round((annual ? next.usdY : next.usdM) * NOK);
-    // Finn omsetning der neste plan blir billigere
-    // spLisens + rev*sp.txExt = nextLisens + rev*next.txExt
-    // rev*(sp.txExt - next.txExt) = nextLisens - spLisens
-    const diff = sp.txExt - next.txExt;
-    if (diff > 0) {
-      const breakeven = Math.ceil((nextLisens - spLisens) / diff);
-      if (breakeven > rev) {
-        spUpgrade = { plan: next.plan, breakeven };
-      } else {
-        spUpgrade = { plan: next.plan, already: true };
-      }
-    }
+  const switcher = shopifyPlans.map((pl, i) => {
+    const isActive = i === activePlanIdx;
+    const isRec = i === recommendedIdx;
+    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('shopify',${i})">${pl.plan}</div>`;
+  }).join('');
+
+  const txLabel = useExt ? `Tx-gebyr til Shopify (${(p.txExt*100).toFixed(1)}%)` : 'Tx-gebyr til Shopify';
+
+  let extraBox = '';
+  if (useExt && tx > 0) {
+    extraBox = `<div class="warning-box">Shopify tar ${(p.txExt*100).toFixed(1)}% ekstra i tillegg til hva Klarna/Nets/Dintero tar. Det kan utgjøre store beløp.</div>`;
+  }
+  if (isPlus && p.plusReasons) {
+    extraBox += `<div class="plus-box"><strong>Plus er mer enn omsetning.</strong> Vurder Plus når du trenger:<br>${p.plusReasons.map(r=>'· '+r).join('<br>')}</div>`;
+  } else if (!isPlus && activePlanIdx !== recommendedIdx) {
+    const rec = shopifyPlans[recommendedIdx];
+    extraBox += `<div class="info-box">Anbefalt plan for dette omsetningsnivået er <strong>${rec.plan}</strong>.</div>`;
   }
 
-  // WOOCOMMERCE
-  const wp = getPlan(wooPlans, rev);
-  const wpTotal = wp.hosting;
-
-  // LITIUM
-  const lp = getPlan(litiumPlans, rev);
-  const lpTotal = lp.lisens;
-
-  const results = [
-    {
-      key:'shopify', name:'Shopify', color:'#185fa5',
-      plan: sp.plan + (annual?' (årlig)':' (månedlig)'),
-      rows: [
-        { label:'Lisens', val: spLisens },
-        useExt
-          ? { label:`Tx-gebyr til Shopify (${(sp.txExt*100).toFixed(1)}%)`, val: spTx, warn: true }
-          : { label:'Tx-gebyr til Shopify', val: 0, zero:'Ingen (Shopify Payments)' },
-      ],
-      total: spTotal,
-      upgrade: spUpgrade,
-      warning: useExt ? `Shopify tar ${(sp.txExt*100).toFixed(1)}% ekstra i tillegg til hva Klarna/Nets/Dintero tar. Det kan utgjøre store beløp ved høy omsetning.` : null
-    },
-    {
-      key:'woo', name:'WooCommerce', color:'#3b6d11',
-      plan: wp.plan,
-      rows: [
-        { label:'Lisens til plattform', val: 0, zero:'Ingen' },
-        { label:'Hosting / vedlikehold (est.)', val: wp.hosting },
-      ],
-      total: wpTotal,
-      upgrade: null,
-      warning: null
-    },
-    {
-      key:'litium', name:'Litium', color:'#7F77DD',
-      plan: lp.plan,
-      rows: [
-        { label:'Lisens (indikativ)', val: lp.lisens },
-        { label:'Tx-gebyr til plattform', val: 0, zero:'Ingen' },
-      ],
-      total: lpTotal,
-      upgrade: null,
-      warning: null
-    }
-  ];
-
-  const minTotal = Math.min(...results.map(r => r.total));
-
-  document.getElementById('platform-grid').innerHTML = results.map(r => {
-    const isBest = r.total === minTotal;
-    return `
-    <div class="pcard${isBest?' cheapest':''}">
-      <div class="badge${isBest?' best':'  hidden'}">${isBest?'Lavest plattformkostnad':'&nbsp;'}</div>
-      <div class="pname">${r.name}</div>
-      <div class="plan-tag">${r.plan}</div>
-      ${r.rows.map(row=>`
-        <div class="cost-row">
-          <span class="cost-label">${row.label}</span>
-          <span class="cost-val${row.warn?' warn':''}">${fmt(row.val, row.zero)}</span>
-        </div>`).join('')}
+  return `
+    <div class="pcard" id="card-shopify">
+      <div class="badge hidden">&nbsp;</div>
+      <div class="pname">Shopify</div>
+      <div class="plan-switcher">${switcher}</div>
+      <div class="cost-row"><span class="cost-label">Lisens</span><span class="cost-val">${fmt(lisens)}</span></div>
+      <div class="cost-row"><span class="cost-label">${txLabel}</span><span class="cost-val${useExt&&tx>0?' warn':''}">${fmt(tx, 'Ingen (Shopify Payments)')}</span></div>
       <div class="total-row">
         <span class="total-label">Per måned</span>
         <div>
-          <div class="total-val" style="color:${isBest?r.color:'#1a1a18'}">${fmt(r.total)}</div>
-          <div class="total-yr">${fmt(r.total*12)} / år</div>
+          <div class="total-val" style="color:#185fa5">${fmt(total)}</div>
+          <div class="total-yr">${fmt(total*12)} / år</div>
         </div>
       </div>
-      ${r.warning ? `<div class="warning-box"><strong>Merk:</strong> ${r.warning}</div>` : ''}
-      ${r.upgrade && !r.upgrade.already ? `<div class="upgrade-box">Oppgrader til <strong>${r.upgrade.plan}</strong> når omsetning passerer ${Math.round(r.upgrade.breakeven).toLocaleString('nb-NO')} kr/mnd – da blir lavere tx-gebyr lønnsomt.</div>` : ''}
-      ${r.upgrade && r.upgrade.already ? `<div class="upgrade-box"><strong>${r.upgrade.plan}</strong>-planen er allerede lønnsom på dette omsetningsnivået.</div>` : ''}
+      ${extraBox}
     </div>`;
+}
+
+function renderWooCard(rev, activeIdx, recommendedIdx) {
+  const p = wooPlans[activeIdx];
+  const total = p.hosting;
+  const switcher = wooPlans.map((pl, i) => {
+    const isActive = i === activeIdx;
+    const isRec = i === recommendedIdx;
+    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('woo',${i})">${pl.plan}</div>`;
   }).join('');
+  let extraBox = activeIdx !== recommendedIdx
+    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${wooPlans[recommendedIdx].plan}</strong>.</div>` : '';
+  return `
+    <div class="pcard" id="card-woo">
+      <div class="badge hidden">&nbsp;</div>
+      <div class="pname">WooCommerce</div>
+      <div class="plan-switcher">${switcher}</div>
+      <div class="cost-row"><span class="cost-label">Lisens til plattform</span><span class="cost-val">Ingen</span></div>
+      <div class="cost-row"><span class="cost-label">Hosting / vedlikehold (est.)</span><span class="cost-val">${fmt(p.hosting)}</span></div>
+      <div class="total-row">
+        <span class="total-label">Per måned</span>
+        <div>
+          <div class="total-val" style="color:#3b6d11">${fmt(total)}</div>
+          <div class="total-yr">${fmt(total*12)} / år</div>
+        </div>
+      </div>
+      ${extraBox}
+    </div>`;
+}
+
+function renderLitiumCard(rev, activeIdx, recommendedIdx) {
+  const p = litiumPlans[activeIdx];
+  const total = p.lisens;
+  const switcher = litiumPlans.map((pl, i) => {
+    const isActive = i === activeIdx;
+    const isRec = i === recommendedIdx;
+    return `<div class="plan-btn${isActive?' active':''}${isRec?' recommended':''}" onclick="switchPlan('litium',${i})">${pl.plan}</div>`;
+  }).join('');
+  let extraBox = activeIdx !== recommendedIdx
+    ? `<div class="info-box">Anbefalt for dette nivået: <strong>${litiumPlans[recommendedIdx].plan}</strong>.</div>` : '';
+  return `
+    <div class="pcard" id="card-litium">
+      <div class="badge hidden">&nbsp;</div>
+      <div class="pname">Litium</div>
+      <div class="plan-switcher">${switcher}</div>
+      <div class="cost-row"><span class="cost-label">Lisens (indikativ)</span><span class="cost-val">${fmt(p.lisens)}</span></div>
+      <div class="cost-row"><span class="cost-label">Tx-gebyr til plattform</span><span class="cost-val">Ingen</span></div>
+      <div class="total-row">
+        <span class="total-label">Per måned</span>
+        <div>
+          <div class="total-val" style="color:#7F77DD">${fmt(total)}</div>
+          <div class="total-yr">${fmt(total*12)} / år</div>
+        </div>
+      </div>
+      ${extraBox}
+    </div>`;
+}
+
+let currentRev, currentAnnual, currentUseExt;
+let recShopify, recWoo, recLitium;
+
+window.switchPlan = function(platform, idx) {
+  selectedPlan[platform] = idx;
+  renderCards();
+};
+
+function renderCards() {
+  const grid = document.getElementById('platform-grid');
+  grid.innerHTML =
+    renderShopifyCard(currentRev, currentAnnual, currentUseExt, selectedPlan.shopify, recShopify) +
+    renderWooCard(currentRev, selectedPlan.woo, recWoo) +
+    renderLitiumCard(currentRev, selectedPlan.litium, recLitium);
+}
+
+function calculate() {
+  currentRev    = parseInt(document.getElementById('rev').value);
+  currentAnnual = getVal('billing') === 'annual';
+  currentUseExt = getVal('payment') === 'external';
+
+  recShopify = shopifyPlans.indexOf(getPlan(shopifyPlans, currentRev));
+  recWoo     = wooPlans.indexOf(getPlan(wooPlans, currentRev));
+  recLitium  = litiumPlans.indexOf(getPlan(litiumPlans, currentRev));
+
+  selectedPlan.shopify = recShopify;
+  selectedPlan.woo     = recWoo;
+  selectedPlan.litium  = recLitium;
+
+  renderCards();
 
   // Tier table
   const tbody = document.getElementById('tier-body');
   tbody.innerHTML = '';
-
   const sections = [
-    {
-      label: 'Shopify',
-      plans: shopifyPlans.map(p => ({
-        plan: p.plan,
-        lisens: Math.round((annual ? p.usdY : p.usdM) * NOK),
-        tx: useExt ? (p.txExt*100).toFixed(1)+'%' : '–',
-        revRange: p.revMax >= 999999999
-          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
-          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
-        active: sp.plan === p.plan
-      }))
-    },
-    {
-      label: 'WooCommerce',
-      plans: wooPlans.map(p => ({
-        plan: p.plan,
-        lisens: p.hosting,
+    { label:'Shopify', plans: shopifyPlans.map((p,i) => ({
+        plan: p.plan, lisens: Math.round((currentAnnual?p.usdY:p.usdM)*NOK),
+        tx: currentUseExt ? (p.txExt*100).toFixed(1)+'%' : '–',
+        revRange: p.revMax>=999999999 ? (p.revMin/1000000).toFixed(0)+' MNOK+/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
+        active: i === recShopify
+      }))},
+    { label:'WooCommerce', plans: wooPlans.map((p,i) => ({
+        plan: p.plan, lisens: p.hosting,
         tx: '–',
-        revRange: p.revMax >= 999999999
-          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
-          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
-        active: wp.plan === p.plan
-      }))
-    },
-    {
-      label: 'Litium',
-      plans: litiumPlans.map(p => ({
-        plan: p.plan,
-        lisens: p.lisens,
+        revRange: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
+        active: i === recWoo
+      }))},
+    { label:'Litium', plans: litiumPlans.map((p,i) => ({
+        plan: p.plan, lisens: p.lisens,
         tx: '–',
-        revRange: p.revMax >= 999999999
-          ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr'
-          : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr',
-        active: lp.plan === p.plan
-      }))
-    }
+        revRange: p.revMax>=999999999 ? (p.revMin/1000).toLocaleString('nb-NO')+' 000+ kr/mnd' : (p.revMin/1000).toLocaleString('nb-NO')+' – '+(p.revMax/1000).toLocaleString('nb-NO')+' 000 kr/mnd',
+        active: i === recLitium
+      }))}
   ];
-
   sections.forEach(s => {
-    tbody.insertAdjacentHTML('beforeend',
-      `<tr class="platform-sep"><td colspan="4">${s.label}</td></tr>`);
+    tbody.insertAdjacentHTML('beforeend', `<tr class="platform-sep"><td colspan="4">${s.label}</td></tr>`);
     s.plans.forEach(p => {
       tbody.insertAdjacentHTML('beforeend', `
         <tr class="${p.active?'active-row':''}">
-          <td>${p.plan}${p.active?' ←':''}</td>
+          <td>${p.plan}${p.active?' ★':''}</td>
           <td>${fmt(p.lisens)}</td>
           <td>${p.tx}</td>
           <td>${p.revRange}</td>
